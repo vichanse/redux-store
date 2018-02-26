@@ -10,7 +10,8 @@ const todoList = document.querySelector('.todos') as HTMLLIElement;
 const reducers = {
   todos: fromStore.reducer
 };
-const store = new fromStore.Store({ reducers });
+
+const store = new fromStore.Store(reducers);
 
 button.addEventListener(
   'click',
@@ -28,6 +29,10 @@ button.addEventListener(
   },
   false
 );
+
+const unsubscribe = store.subscribe(state => {
+  renderTodos(state.todos.data);
+});
 
 todoList.addEventListener('click', function(event) {
   const target = event.target as HTMLButtonElement;
