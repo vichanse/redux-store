@@ -4,7 +4,8 @@ export class Store {
   private state: { [Key: string]: any };
 
   constructor(reducers = {}, initialState = {}) {
-    this.state = initialState;
+    this.reducers = reducers;
+    this.state = this.reduce(initialState, {});
   }
 
   get value() {
@@ -12,9 +13,14 @@ export class Store {
   }
 
   dispatch(action) {
-    this.state = {
-      ...this.state,
-      todos: [...this.state.todos, action.payload]
-    };
+    this.state = this.reduce(this.state, action);
+  }
+
+  private reduce(state, action) {
+    const newState = {};
+    for (const prop in this.reducers) {
+      newState[prop] = this.reducers[prop](state[prop], action);
+    }
+    return newState;
   }
 }
